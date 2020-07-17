@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Button, message} from 'antd';
 
 
 /*
@@ -6,9 +7,7 @@ import React, {Component} from 'react'
  */
 
  export default class App extends Component {
-     render() {
-         return (
-            <div>App</div>
-         );
-     }
+     
+    handleClick = () => message.success('This is a success message');
+     render = () => <Button type="primary" onClick={this.handleClick}>Primary</Button>
  }
