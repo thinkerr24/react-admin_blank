@@ -23,6 +23,20 @@ class Login extends Component {
         const values = form.getFieldsValue();
         console.log('handleSubmit:', values);
     }
+
+    // 对密码进行自定义验证
+    validatePwd = (rule, value, callback) => {
+        if (!value) {
+            callback('密码不能为空'); // 验证不通过, callback传提示信息文本
+        } else if (value.length < 4 || value.length > 12) {
+            callback('密码4到12位!');
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+            callback('密码必须由英文、数字或下划线组成!');
+        } else {
+            callback(); // 验证通过, callback不传
+        }
+    }
+
     render() {
 
         //  得到具有强大功能的form对象
@@ -53,7 +67,13 @@ class Login extends Component {
                             />)}
                      </Form.Item>
                         <Form.Item>
-                          {getFieldDecorator('password', {})(
+                          {getFieldDecorator('password', { // 自定义校验
+                            rules: [
+                                {
+                                    validator: this.validatePwd
+                                }
+                            ]
+                          })(
                             <Input
                                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 type="password"
