@@ -6,7 +6,13 @@ import logo from './images/logo.png'
  * 登录的路由组件
  */
 class Login extends Component {
-
+    /*
+      用户名 / 密码的的合法性要求
+        1). 必须输入
+        2). 必须大于等于 4 位
+        3). 必须小于等于 12 位
+        4). 必须是英文、数字或下划线组成
+    */
 
     handleSubmit = event => {
         // 阻止事件的默认行为
@@ -33,7 +39,14 @@ class Login extends Component {
                     <h2>用户登录</h2>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
-                        {getFieldDecorator('username', {})(
+                        {/* 配置对象:属性名是特定的一些名称 */}
+                        {getFieldDecorator('username', { // 声明式验证: 直接使用别人定义好的验证规则进行验证
+                            rules: [
+                                { required: true, whitespace: true, message: '用户名不能为空!' },
+                                { min: 4, message: '用户名至少4位!' },
+                                { max: 12, message: '用户名至多12位!' },
+                                { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须由英文、数字或下划线组成!' }
+                        ],})(
                             <Input
                                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 placeholder="用户名"
