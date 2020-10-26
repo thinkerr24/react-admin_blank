@@ -71,7 +71,9 @@ class Login extends Component {
                                 { min: 4, message: '用户名至少4位!' },
                                 { max: 12, message: '用户名至多12位!' },
                                 { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须由英文、数字或下划线组成!' }
-                        ],})(
+                            ],
+                            initialValue: 'admin' // 设定初始值
+                        })(
                             <Input
                                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 placeholder="用户名"
