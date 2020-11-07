@@ -26,12 +26,8 @@ class Login extends Component {
                 // console.log('提交登录的ajax请求', values);
                 // 请求登陆
                 const {username, password} = values;
-                try {
-                  const response = await reqLogin(username, password);
-                  console.log('requse success:', response.data);
-                } catch(error) {
-                    console.log('request error:', error);
-                }
+                const response = await reqLogin(username, password);
+                console.log('requse success:', response.data);
 
             } else {
                 console.log('校验失败!');
