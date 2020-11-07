@@ -15,3 +15,8 @@ export default function ajax(url, data = {}, method = "GET") {
         return axios.post(url, data);
     }
 }
+
+    // 请求登录接口
+    // ajax('/login', {username: 'Tom', password: '12345'}, 'POST').then()
+    // 添加用户
+    // ajax('/manage/user/add', {username: 'Tom', password: '12345', phone: '137546xxxxx'}, 'POST').then()
