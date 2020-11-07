@@ -20,17 +20,19 @@ class Login extends Component {
         event.preventDefault();
 
         // 对所有表单字段进行校验
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async (err, values) => {
             // 校验成功
             if (!err) {
                 // console.log('提交登录的ajax请求', values);
                 // 请求登陆
                 const {username, password} = values;
-                reqLogin(username, password).then(response => {
-                    console.log('success:', response.data);
-                }).catch(error =>{
-                    console.log('failure:', error);
-                });
+                try {
+                  const response = await reqLogin(username, password);
+                  console.log('requse success:', response.data);
+                } catch(error) {
+                    console.log('request error:', error);
+                }
+
             } else {
                 console.log('校验失败!');
             }
@@ -140,3 +142,13 @@ export default WrapLogin;
  * 1. 前台表单验证
  * 2. 收集表单数据
  */
+
+ /**
+  * async/await
+  * 1.作用: 简化promise对象的写法, 不用再使用.then来指定成功/失败的回调函数
+  *         以同步编码(没有回调函数)方式实现异步流程            
+  * 2.写await的地方:
+  *         在返回promise表达式左侧写await: 不想要promise，想要promise异步执行成功的value数据
+  * 3.写async的地方:
+  *         await所在最近(内)函数定义的左侧写async
+  */
