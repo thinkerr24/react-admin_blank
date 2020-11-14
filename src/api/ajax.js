@@ -2,8 +2,9 @@
  * 能发送异步ajax请求的函数模块
  * 封装axios库
  * 函数返回值是promise对象
- * 1. 优化: 统一处理请求异常(error generator: change api/index.js line 15 to ajax('/login3', {username, password}, 'POST');)
+ * 1. 优化①: 统一处理请求异常(error generator: change api/index.js line 15 to ajax('/login3', {username, password}, 'POST');)
  *      在外层包一个自己创建的promise对象，在请求出错时，不reject(error), 而是显示错误提示
+ *    优化②: 异步得到不是response，而是response.data 在请求成功resolve时: resolve(response.data)
  */
 
 import axios from 'axios';
@@ -22,7 +23,7 @@ export default function ajax(url, data = {}, method = "GET") {
         }
         // 2. 如果执行成功, 调用resolve(value)
         promise.then(response => {
-            resolve(response);
+            resolve(response.data);
         // 3. 如果执行失败, 不调用reject(reason), 而是提示异常信息
         }).catch(error => {
             // reject(error)

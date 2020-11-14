@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import './login.less';
 import logo from './images/logo.png';
 import { reqLogin } from '../../api';
@@ -26,8 +26,18 @@ class Login extends Component {
                 // console.log('提交登录的ajax请求', values);
                 // 请求登陆
                 const {username, password} = values;
-                const response = await reqLogin(username, password);
-                console.log('requse success:', response.data);
+                const result = await reqLogin(username, password);
+                //console.log('request success:', response.data);
+                // {status: 0, data: user} {status: 1, msg: xxx}
+                if (result.status === 0) { // 登陆成功
+                    // 提示登陆成功
+                    message.success('登陆成功');
+                    // 跳转到管理界面(不需要再回退到登陆，所以用replace，否则用push)
+                    this.props.history.replace('/')
+                } else { // 登陆失败
+                    // 提示错误信息
+                   message.error(result.msg);
+                }
 
             } else {
                 console.log('校验失败!');
