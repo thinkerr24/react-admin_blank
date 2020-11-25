@@ -21,9 +21,11 @@ export default class LeftNav extends Component {
                     mode="inline"
                     theme="dark"
                 >
-                    <Menu.Item key="1">
-                        <Icon type="pie-chart" />
-                        <span>首页</span>
+                    <Menu.Item key="/home">
+                        <Link to='/home'>
+                            <Icon type="pie-chart" />
+                            <span>首页</span>
+                        </Link>
                     </Menu.Item>
                     <SubMenu
                         key="sub1"
@@ -34,15 +36,31 @@ export default class LeftNav extends Component {
                             </span>
                         }
                     >
-                        <Menu.Item key="5">
-                            <Icon type="mail" />
-                            <span>品类管理</span>
+                        <Menu.Item key="/category">
+                            <Link to='/category'>
+                                <Icon type="mail" />
+                                <span>品类管理</span>
+                            </Link>
                         </Menu.Item>
-                        <Menu.Item key="6">
-                            <Icon type="mail" />
-                            <span>商品管理</span>
+                        <Menu.Item key="/product">
+                            <Link to='/product'>
+                                <Icon type="mail" />
+                                <span>商品管理</span>
+                            </Link>
                         </Menu.Item>
                     </SubMenu>
+                    <Menu.Item key="/user">
+                        <Link to='/user'>
+                            <Icon type="mail" />
+                            <span>用户管理</span>
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key="/role">
+                        <Link to='/role'>
+                            <Icon type="mail" />
+                            <span>角色管理</span>
+                        </Link>
+                    </Menu.Item>
                 </Menu>
             </div>
         )
