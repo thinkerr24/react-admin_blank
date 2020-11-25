@@ -3,6 +3,7 @@ import { Form, Icon, Input, Button, message } from 'antd';
 import './login.less';
 import logo from './images/logo.png';
 import { reqLogin } from '../../api';
+import memoryUtils from '../../utils/memoryUtils';
 /*
  * 登录的路由组件
  */
@@ -32,8 +33,11 @@ class Login extends Component {
                 if (result.status === 0) { // 登陆成功
                     // 提示登陆成功
                     message.success('登陆成功');
+                    // 保存user
+                    memoryUtils.user = result.data; // 保存在内存中
+                    console.log(" memoryUtils.user:",  memoryUtils.user);
                     // 跳转到管理界面(不需要再回退到登陆，所以用replace，否则用push)
-                    this.props.history.replace('/')
+                    this.props.history.replace('/');
                 } else { // 登陆失败
                     // 提示错误信息
                    message.error(result.msg);
