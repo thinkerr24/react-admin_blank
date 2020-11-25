@@ -4,6 +4,8 @@ import './login.less';
 import logo from './images/logo.png';
 import { reqLogin } from '../../api';
 import memoryUtils from '../../utils/memoryUtils';
+import storageUtils from '../../utils/storageUtils';
+import { Redirect } from 'react-router-dom';
 /*
  * 登录的路由组件
  */
@@ -34,7 +36,9 @@ class Login extends Component {
                     // 提示登陆成功
                     message.success('登陆成功');
                     // 保存user
-                    memoryUtils.user = result.data; // 保存在内存中
+                    const uesr = result.data;
+                    memoryUtils.user = uesr; // 保存在内存中
+                    storageUtils.saveUser(uesr); // 保存到local中
                     console.log(" memoryUtils.user:",  memoryUtils.user);
                     // 跳转到管理界面(不需要再回退到登陆，所以用replace，否则用push)
                     this.props.history.replace('/');
@@ -69,7 +73,11 @@ class Login extends Component {
     }
 
     render() {
-
+        // 如果用户已经登陆, 自动跳转到管理页面
+        const user = memoryUtils.user;
+        if (user && user._id) {
+            return <Redirect to="/"/>
+        }
         //  得到具有强大功能的form对象
         const form = this.props.form;
         const { getFieldDecorator } = form;
