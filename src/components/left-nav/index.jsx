@@ -3,11 +3,41 @@ import { Link } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
 import logo from '../../assets/images/logo.png';
 import './index.less';
+import menuList from '../../config/menuConfig';
 const { SubMenu } = Menu;
 /**
  * 左侧导航组件
  */
 export default class LeftNav extends Component {
+    // 根据menu的数据数组生成对应的标签数组(map + 递归)
+    getMenuNodes = menuList => menuList.map(item => {
+        if (!item.children) {
+            return (
+                <Menu.Item key={item.key}>
+                    <Link to={item.key}>
+                        <Icon type={item.icon} />
+                        <span>{item.title}</span>
+                    </Link>
+                </Menu.Item>
+            )
+        } else {
+            return (
+                <SubMenu
+                    key={item.key}
+                    title={
+                        <span>
+                            <Icon type={item.icon} />
+                            <span>{item.title}</span>
+                        </span>
+                    }
+                >
+                 {this.getMenuNodes(item.children)}
+                </SubMenu>
+            )
+        }
+    })
+
+
     render() {
         return (
             <div className="left-nav">
@@ -21,7 +51,10 @@ export default class LeftNav extends Component {
                     mode="inline"
                     theme="dark"
                 >
-                    <Menu.Item key="/home">
+                    {
+                        this.getMenuNodes(menuList)
+                    }
+                    {/* <Menu.Item key="/home">
                         <Link to='/home'>
                             <Icon type="pie-chart" />
                             <span>首页</span>
@@ -60,7 +93,7 @@ export default class LeftNav extends Component {
                             <Icon type="mail" />
                             <span>角色管理</span>
                         </Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                 </Menu>
             </div>
         )
