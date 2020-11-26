@@ -10,7 +10,7 @@ const { SubMenu } = Menu;
  */
 export default class LeftNav extends Component {
     // 根据menu的数据数组生成对应的标签数组(map + 递归)
-    getMenuNodes = menuList => menuList.map(item => {
+    getMenuNodes_map = menuList => menuList.map(item => {
         if (!item.children) {
             return (
                 <Menu.Item key={item.key}>
@@ -31,12 +31,42 @@ export default class LeftNav extends Component {
                         </span>
                     }
                 >
-                 {this.getMenuNodes(item.children)}
+                    {this.getMenuNodes_map(item.children)}
                 </SubMenu>
             )
         }
     })
 
+    // (reduce + 递归)
+    getMenuNodes = menuList => menuList.reduce((pre, item) => {
+        if (!item.children) {
+            // 向pre添加<Menu>
+            pre.push((
+                <Menu.Item key={item.key}>
+                    <Link to={item.key}>
+                        <Icon type={item.icon} />
+                        <span>{item.title}</span>
+                    </Link>
+                </Menu.Item>
+            ));
+        } else {
+            // 向pre添加<SubMenu>
+            pre.push((
+                <SubMenu
+                    key={item.key}
+                    title={
+                        <span>
+                            <Icon type={item.icon} />
+                            <span>{item.title}</span>
+                        </span>
+                    }
+                >
+                    {this.getMenuNodes(item.children)}
+                </SubMenu>
+            ));
+        }
+        return pre;
+    }, [])
 
     render() {
         return (
