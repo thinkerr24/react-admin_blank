@@ -50,6 +50,12 @@ class LeftNav extends Component {
                 </Menu.Item>
             ));
         } else {
+            // 查找一个与当前请求路径匹配的子Item
+            const cItem = item.children.find(cItem => cItem.key === this.props.location.pathname);
+            // 如果存在, 说明当前item的子列表需要打开
+            if (cItem) {
+                this.openKey = item.key;
+            }
             // 向pre添加<SubMenu>
             pre.push((
                 <SubMenu
@@ -68,11 +74,15 @@ class LeftNav extends Component {
         return pre;
     }, [])
 
+    // 在第一次render前执行一次, 为第一个render()准备数据(必须同步的)
+    componentWillMount() {
+        this.menuNodes = this.getMenuNodes(menuList);
+    }
     render() {
-
         // 获得当前请求的路由路径
         const path = this.props.location.pathname;
-
+        // 得到需要打开菜单项的key
+        const openKey = this.openKey;
         return (
             <div className="left-nav">
                 <Link to='/' className='left-nav-header'>
@@ -83,10 +93,9 @@ class LeftNav extends Component {
                     mode="inline"
                     theme="dark"
                     selectedKeys={[path]}
+                    defaultOpenKeys={[openKey]}
                 >
-                    {
-                        this.getMenuNodes(menuList)
-                    }
+                    {this.menuNodes}
                     {/* <Menu.Item key="/home">
                         <Link to='/home'>
                             <Icon type="pie-chart" />
