@@ -1,29 +1,51 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { reqWeather } from '../../api';
+import menuList from '../../config/menuConfig';
 import memoryUtils from '../../utils/memoryUtils';
 import "./index.less";
+// import {formateDate} from '../../utils/dateUtils'
 /**
  * 头部组件
  */
-export default class Header extends Component {
+class Header extends Component {
     state = {
         currentTime: moment(new Date()).format('yyyy-MM-DD HH:mm:ss'),   // 当前时间
         dayPictureUrl: '', // 天气图标
         weather: '' // 天气
     }
 
+    getTitle = () => {
+        // 得到当前请求路径
+        const path = this.props.location.pathname;
+        let title = '';
+        menuList.forEach(item => {
+            if (item.key === path) {
+                title = item.title;
+            } else if (item.children) {
+                const cItem = item.children.find(cItem => cItem.key === path);
+                if (cItem) {
+                    title = cItem.title;
+                }
+            }
+        });
+
+        return title;
+    }
+
     getTime = () => {
         // 每隔1s获取当前时间, 并更新状态数据currentTime
         setInterval(() => {
+            // const currentTime = formateDate(Date.now())
             const currentTime = moment(new Date()).format('yyyy-MM-DD HH:mm:ss');
             this.setState({ currentTime });
         }, 1000);
     }
 
     getWeather = async () => {
-        const {dayPictureUrl, weather} = await reqWeather('武汉');
-        this.setState({dayPictureUrl, weather}); 
+        const { dayPictureUrl, weather } = await reqWeather('武汉');
+        this.setState({ dayPictureUrl, weather });
     }
 
     // 第一次render之后执行
@@ -40,6 +62,8 @@ export default class Header extends Component {
 
         const { currentTime, dayPictureUrl, weather } = this.state;
         const username = memoryUtils.user.username;
+        const title = this.getTitle();
+
         return (
             <div className="header">
                 <div className="header-top">
@@ -48,7 +72,7 @@ export default class Header extends Component {
                 </div>
                 <div className="header-bottom">
                     <div className="header-bottom-left">
-                        首页
+                        {title}
                     </div>
                     <div className="header-bottom-right">
                         <span>{currentTime}</span>
@@ -60,3 +84,5 @@ export default class Header extends Component {
         )
     }
 }
+
+export default withRouter(Header);
