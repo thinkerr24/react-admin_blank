@@ -20,7 +20,7 @@ export const reqLogin = (username, password) => ajax('/login', { username, passw
 export const reqAddUser = user => ajax('/manage/user/add', user, 'POST');
 
 // 获取一级/二级分类列表
-export const reqCategorys = parentId => ajax('/manage/category/list', { parentId });
+export const reqCategories = parentId => ajax('/manage/category/list', { parentId });
 // 添加分类
 export const reqAddCategory = (categoryName, parentId) => ajax('/manage/category/add', { categoryName, parentId }, 'POST');
 // 更新分类
