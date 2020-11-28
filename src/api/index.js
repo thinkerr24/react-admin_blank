@@ -17,7 +17,15 @@ import ajax from './ajax';
 export const reqLogin = (username, password) => ajax('/login', { username, password }, 'POST');
 
 // 添加用户
-export const reqAddUser = (user) => ajax('/manage/user/add', user, 'POST');
+export const reqAddUser = user => ajax('/manage/user/add', user, 'POST');
+
+// 获取一级/二级分类列表
+export const reqCategorys = parentId => ajax('/manage/category/list', { parentId });
+// 添加分类
+export const reqAddCategory = (categoryName, parentId) => ajax('/manage/category/add', { categoryName, parentId }, 'POST');
+// 更新分类
+export const reqUpdateCategory = (categoryId, categoryName) => ajax('/manage/category/update', { categoryId, categoryName }, 'POST');
+
 
 // jsonp请求接口的请求函数
 export const reqWeather = city => new Promise((resolve, reject) => {
