@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { Modal } from 'antd';
+
+import LinkButton from '../link-button';
 import { reqWeather } from '../../api';
 import menuList from '../../config/menuConfig';
 import memoryUtils from '../../utils/memoryUtils';
@@ -79,7 +81,7 @@ class Header extends Component {
         // 清除定时器
         clearInterval(this.intervalId);
     }
-    
+
     render() {
 
         const { currentTime, dayPictureUrl, weather } = this.state;
@@ -90,7 +92,7 @@ class Header extends Component {
             <div className="header">
                 <div className="header-top">
                     <span>欢迎, {username}</span>
-                    <a onClick={this.logout}>退出</a>
+                    <LinkButton onClick={this.logout}>退出</LinkButton>
                 </div>
                 <div className="header-bottom">
                     <div className="header-bottom-left">
