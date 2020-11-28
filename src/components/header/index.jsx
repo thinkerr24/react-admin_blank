@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import { Modal } from 'antd';
 import { reqWeather } from '../../api';
 import menuList from '../../config/menuConfig';
 import memoryUtils from '../../utils/memoryUtils';
+import storageUtils from '../../utils/storageUtils';
 import "./index.less";
 // import {formateDate} from '../../utils/dateUtils'
 /**
@@ -36,7 +38,7 @@ class Header extends Component {
 
     getTime = () => {
         // 每隔1s获取当前时间, 并更新状态数据currentTime
-        setInterval(() => {
+        this.intervalId = setInterval(() => {
             // const currentTime = formateDate(Date.now())
             const currentTime = moment(new Date()).format('yyyy-MM-DD HH:mm:ss');
             this.setState({ currentTime });
@@ -46,6 +48,20 @@ class Header extends Component {
     getWeather = async () => {
         const { dayPictureUrl, weather } = await reqWeather('武汉');
         this.setState({ dayPictureUrl, weather });
+    }
+
+    logout = () => {
+        // 显示对话框
+        Modal.confirm({
+            content: '确定退出吗?',
+            onOk: () => {
+               // 删除保存的user数据
+                storageUtils.removeUser();
+                memoryUtils.user = {};
+               // 跳转到登陆页
+               this.props.history.replace('/login');
+            },
+        });
     }
 
     // 第一次render之后执行
@@ -58,6 +74,12 @@ class Header extends Component {
         this.getWeather();
     }
 
+    // 当前组件卸载前调用
+    componentWillUnmount() {
+        // 清除定时器
+        clearInterval(this.intervalId);
+    }
+    
     render() {
 
         const { currentTime, dayPictureUrl, weather } = this.state;
@@ -68,7 +90,7 @@ class Header extends Component {
             <div className="header">
                 <div className="header-top">
                     <span>欢迎, {username}</span>
-                    <a>退出</a>
+                    <a onClick={this.logout}>退出</a>
                 </div>
                 <div className="header-bottom">
                     <div className="header-bottom-left">
