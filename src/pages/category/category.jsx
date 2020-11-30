@@ -38,7 +38,8 @@ export default class Category extends Component {
                     <span>
                         <LinkButton>修改分类</LinkButton>
                         {/* 如何向事件回调函数传递参数: 先定义一个函数, 然后在这个函数中调用原函数 */}
-                        <LinkButton onClick={() => this.showSubCategories(category)}>查看子分类</LinkButton>
+                        {/* {this.state.parentId === '0' ? <LinkButton onClick={() => this.showSubCategories(category)}>查看子分类</LinkButton> : null} */}
+                        {this.state.parentId === '0' && <LinkButton onClick={() => this.showSubCategories(category)}>查看子分类</LinkButton>}
                     </span>
                 )
             },
@@ -76,6 +77,15 @@ export default class Category extends Component {
             this.getCategories();
         });
     }
+
+    showCategories = () => {
+        this.setState({
+            parentId: '0',
+            parentName: '',
+            subCategories: []
+        })
+    }
+
     // 为第一次render()准备数据
     componentWillMount() {
         this.initColumns();
@@ -90,9 +100,15 @@ export default class Category extends Component {
 
     render() {
 
-        const { categories, subCategories, parentId, loading } = this.state;
+        const { categories, subCategories, parentName, parentId, loading } = this.state;
         // Card左侧
-        const title = '一级分类列表';
+        const title = parentId === '0' ? '一级分类列表' : (
+            <span>
+                <LinkButton onClick={this.showCategories}>一级分类列表</LinkButton>
+                <Icon type="arrow-right"  style={{marginRight: 5}}/>
+                <span>{parentName}</span>
+            </span>
+        );
         // Card右侧
         const extra = (
             <Button type="primary">
