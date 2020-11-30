@@ -9,6 +9,8 @@ import {
 } from 'antd';
 import LinkButton from '../../components/link-button';
 import { reqCategories } from '../../api';
+import AddForm from './add-form';
+import UpdateForm from './update-form';
 
 /**
  * 商品分类路由
@@ -159,7 +161,7 @@ export default class Category extends Component {
                     onOk={this.addCategory}
                     onCancel={this.handleCancel}
                 >
-                    <p>Add category modal...</p>
+                    <AddForm />
                 </Modal>
                 <Modal
                     title="更新分类"
@@ -167,7 +169,7 @@ export default class Category extends Component {
                     onOk={this.updateCategory}
                     onCancel={this.handleCancel}
                 >
-                    <p>Update category modal...</p>
+                    <UpdateForm />
                 </Modal>
             </Card>
         )
