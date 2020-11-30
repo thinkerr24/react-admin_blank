@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
     Form,
     Input
@@ -7,7 +8,19 @@ const Item = Form.Item;
 
 class UpdateForm extends Component {
 
+    static propTypes = {
+        categoryName: PropTypes.string.isRequired,
+        setForm: PropTypes.func.isRequired
+    }
+
+    
+    componentWillMount() {
+        // 将form对象通过setForm传递给父组件
+        this.props.setForm(this.props.form);
+    }
+    
     render() {
+        const { categoryName } = this.props;
         const { getFieldDecorator } = this.props.form;
         return (
             <Form>
@@ -15,8 +28,8 @@ class UpdateForm extends Component {
                     {
                         getFieldDecorator(
                             'categoryName', {
-                                initialValue: ''
-                            }
+                            initialValue: categoryName
+                        }
                         )(
                             <Input placeholder='请输入分类名称' />
                         )
