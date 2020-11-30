@@ -4,7 +4,8 @@ import {
     Table,
     Button,
     Icon,
-    message
+    message,
+    Modal
 } from 'antd';
 import LinkButton from '../../components/link-button';
 import { reqCategories } from '../../api';
@@ -19,8 +20,8 @@ export default class Category extends Component {
         categories: [], // 一级分类列表
         parentId: '0',  // 当前需要显示的分类列表的父分类Id
         parentName: '', // 当前需要显示的分类列表的父分类name
-        subCategories: [] // 二级分类列表
-
+        subCategories: [], // 二级分类列表
+        showStatus: 0,  // 标识确认框是否显示: 0-都不显示, 1-只显示添加, 2-只显示更新
     }
 
     // 初始化Table所有列名的数组
@@ -36,7 +37,7 @@ export default class Category extends Component {
                 width: 300,
                 render: category => ( // 返回需要显示的页面标签
                     <span>
-                        <LinkButton>修改分类</LinkButton>
+                        <LinkButton onClick={this.showUpdate}>修改分类</LinkButton>
                         {/* 如何向事件回调函数传递参数: 先定义一个函数, 然后在这个函数中调用原函数 */}
                         {/* {this.state.parentId === '0' ? <LinkButton onClick={() => this.showSubCategories(category)}>查看子分类</LinkButton> : null} */}
                         {this.state.parentId === '0' && <LinkButton onClick={() => this.showSubCategories(category)}>查看子分类</LinkButton>}
@@ -86,6 +87,32 @@ export default class Category extends Component {
         })
     }
 
+    // 响应点击取消: 隐藏确定框
+    handleCancel = () => {
+        this.setState({
+            showStatus: 0
+        });
+    }
+
+    // 添加分类
+    showAdd = () => {
+        this.setState({
+            showStatus: 1
+        });
+    }
+    addCategory = () => {
+
+    }
+
+    // 更新分类
+    showUpdate = () => {
+        this.setState({
+            showStatus: 2
+        });
+    }
+    updateCategory = () => {
+
+    }
     // 为第一次render()准备数据
     componentWillMount() {
         this.initColumns();
@@ -100,18 +127,18 @@ export default class Category extends Component {
 
     render() {
 
-        const { categories, subCategories, parentName, parentId, loading } = this.state;
+        const { categories, subCategories, parentName, parentId, loading, showStatus } = this.state;
         // Card左侧
         const title = parentId === '0' ? '一级分类列表' : (
             <span>
                 <LinkButton onClick={this.showCategories}>一级分类列表</LinkButton>
-                <Icon type="arrow-right"  style={{marginRight: 5}}/>
+                <Icon type="arrow-right" style={{ marginRight: 5 }} />
                 <span>{parentName}</span>
             </span>
         );
         // Card右侧
         const extra = (
-            <Button type="primary">
+            <Button type="primary" onClick={this.showAdd}>
                 <Icon type="plus" />
                 添加
             </Button>
@@ -126,6 +153,22 @@ export default class Category extends Component {
                     pagination={{ defaultPageSize: 5, showQuickJumper: true }}
                     loading={loading}
                 />;
+                <Modal
+                    title="添加分类"
+                    visible={showStatus === 1}
+                    onOk={this.addCategory}
+                    onCancel={this.handleCancel}
+                >
+                    <p>Add category modal...</p>
+                </Modal>
+                <Modal
+                    title="更新分类"
+                    visible={showStatus === 2}
+                    onOk={this.updateCategory}
+                    onCancel={this.handleCancel}
+                >
+                    <p>Update category modal...</p>
+                </Modal>
             </Card>
         )
     }
