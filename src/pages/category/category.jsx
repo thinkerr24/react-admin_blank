@@ -8,7 +8,7 @@ import {
     Modal
 } from 'antd';
 import LinkButton from '../../components/link-button';
-import { reqCategories, reqUpdateCategory } from '../../api';
+import { reqAddCategory, reqCategories, reqUpdateCategory } from '../../api';
 import AddForm from './add-form';
 import UpdateForm from './update-form';
 
@@ -103,8 +103,21 @@ export default class Category extends Component {
             showStatus: 1
         });
     }
-    addCategory = () => {
+    addCategory = async () => {
+        // 1. 隐藏对话框
+        this.setState({
+            showStatus: 0
+        });
 
+        // 2. 收集数据并提交添加分类请求
+        const { categoryName, parentId } = this.form.getFieldsValue();
+        // 清除缓存数据(重置所有字段)
+        this.form.resetFields();
+        const result = await reqAddCategory(categoryName, parentId);
+        if (result.status === 0) {
+            // 3. 重新获取分类列表显示
+            this.getCategories();
+        }
     }
 
     // 更新分类
@@ -182,7 +195,7 @@ export default class Category extends Component {
                     onOk={this.addCategory}
                     onCancel={this.handleCancel}
                 >
-                    <AddForm />
+                    <AddForm categories={categories} parentId={parentId} setForm={form => this.form = form} />
                 </Modal>
                 <Modal
                     title="更新分类"

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
     Form,
     Select,
@@ -9,7 +10,19 @@ const Option = Select.Option;
 
 class AddForm extends Component {
 
+    static propTypes = {
+        setForm: PropTypes.func.isRequired,
+        categories: PropTypes.array.isRequired,
+        parentId: PropTypes.string.isRequired
+    }
+
+    
+    componentWillMount() {
+        this.props.setForm(this.props.form);
+    }
+    
     render() {
+        const {categories, parentId} = this.props;
         const { getFieldDecorator } = this.props.form;
         return (
             <Form>
@@ -17,13 +30,15 @@ class AddForm extends Component {
                     {
                         getFieldDecorator(
                             'parentId', {
-                            initialValue: '0'
+                            initialValue: parentId
                         }
                         )(
                             <Select>
-                                <Option value='0'>一级分类</Option>
-                                <Option value='1'>家用电器</Option>
-                                <Option value='2'>电脑</Option>
+                                <Option value='0' key='0'>一级分类</Option>
+                                {
+                                    categories.map(c =>  <Option value={c._id} key={c._id}>{c.name}</Option>)
+                                }
+                             
                             </Select>
                         )
                     }
