@@ -28,7 +28,13 @@ class UpdateForm extends Component {
                     {
                         getFieldDecorator(
                             'categoryName', {
-                            initialValue: categoryName
+                            initialValue: categoryName,
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '分类名称须输入'
+                                }
+                            ]
                         }
                         )(
                             <Input placeholder='请输入分类名称' />

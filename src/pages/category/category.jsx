@@ -53,7 +53,7 @@ export default class Category extends Component {
     getCategories = async parentId => {
         // 发请求前, 显示loading
         this.setState({ loading: true });
-        parentId  = parentId || this.state.parentId;
+        parentId = parentId || this.state.parentId;
         const result = await reqCategories(parentId);
         this.setState({ loading: false });
         if (result.status === 0) {
@@ -103,27 +103,30 @@ export default class Category extends Component {
             showStatus: 1
         });
     }
-    addCategory = async () => {
-        // 1. 隐藏对话框
-        this.setState({
-            showStatus: 0
-        });
+    addCategory = () => {
+        this.form.validateFields(async (err, values) => {
+            if (!err) {
+                // 1. 隐藏对话框
+                this.setState({
+                    showStatus: 0
+                });
 
-        // 2. 收集数据并提交添加分类请求
-        const { categoryName, parentId } = this.form.getFieldsValue();
-        // 清除缓存数据(重置所有字段)
-        this.form.resetFields();
-        const result = await reqAddCategory(categoryName, parentId);
-        if (result.status === 0) {
-            if (parentId === this.state.parentId) {
-                // 重新获取分类列表显示(选取当前页建立子分类)
-                this.getCategories();
-            } else if (parentId === '0') { 
-                // 二级分类选取一级分类建立子分类(不需要显示, 但是需要更新state)
-                this.getCategories('0');
+                // 2. 收集数据并提交添加分类请求
+                const { categoryName, parentId } = values;
+                // 清除缓存数据(重置所有字段)
+                this.form.resetFields();
+                const result = await reqAddCategory(categoryName, parentId);
+                if (result.status === 0) {
+                    if (parentId === this.state.parentId) {
+                        // 重新获取分类列表显示(选取当前页建立子分类)
+                        this.getCategories();
+                    } else if (parentId === '0') {
+                        // 二级分类选取一级分类建立子分类(不需要显示, 但是需要更新state)
+                        this.getCategories('0');
+                    }
+                }
             }
-           
-        }
+        });
     }
 
     // 更新分类
@@ -134,23 +137,28 @@ export default class Category extends Component {
             showStatus: 2
         });
     }
-    updateCategory = async () => {
-        // 1.隐藏确定框
-        this.setState({
-            showStatus: 0
+    updateCategory = () => {
+        // 进行表单验证, 只有内容非空才处理
+        this.form.validateFields(async (err, values) => {
+            if (!err) {
+                // 1.隐藏确定框
+                this.setState({
+                    showStatus: 0
+                });
+
+                const categoryId = this.category._id;
+                const { categoryName } = values;
+
+                // 清除缓存数据(重置所有字段)
+                this.form.resetFields();
+                // 2. 发请求更新分类
+                const result = await reqUpdateCategory(categoryId, categoryName);
+                if (result.status === 0) {
+                    // 3. 重新显示列表
+                    this.getCategories();
+                }
+            }
         });
-
-        const categoryId = this.category._id;
-        const categoryName = this.form.getFieldValue('categoryName');
-
-        // 清除缓存数据(重置所有字段)
-        this.form.resetFields();
-        // 2. 发请求更新分类
-        const result = await reqUpdateCategory(categoryId, categoryName);
-        if (result.status === 0) {
-            // 3. 重新显示列表
-            this.getCategories();
-        }
 
     }
     // 为第一次render()准备数据
