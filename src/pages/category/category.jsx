@@ -50,10 +50,10 @@ export default class Category extends Component {
     }
 
     // 异步获取一级/二级分类列表显示
-    getCategories = async () => {
+    getCategories = async parentId => {
         // 发请求前, 显示loading
         this.setState({ loading: true });
-        const { parentId } = this.state;
+        parentId  = parentId || this.state.parentId;
         const result = await reqCategories(parentId);
         this.setState({ loading: false });
         if (result.status === 0) {
@@ -115,8 +115,14 @@ export default class Category extends Component {
         this.form.resetFields();
         const result = await reqAddCategory(categoryName, parentId);
         if (result.status === 0) {
-            // 3. 重新获取分类列表显示
-            this.getCategories();
+            if (parentId === this.state.parentId) {
+                // 重新获取分类列表显示(选取当前页建立子分类)
+                this.getCategories();
+            } else if (parentId === '0') { 
+                // 二级分类选取一级分类建立子分类(不需要显示, 但是需要更新state)
+                this.getCategories('0');
+            }
+           
         }
     }
 
