@@ -84,7 +84,7 @@ class Header extends Component {
 
     render() {
 
-        const { currentTime, dayPictureUrl, weather } = this.state;
+        const { currentTime, weather } = this.state;
         const username = memoryUtils.user.username;
         const title = this.getTitle();
 
@@ -99,8 +99,7 @@ class Header extends Component {
                         {title}
                     </div>
                     <div className="header-bottom-right">
-                        <span>{currentTime}</span>
-                        <img src={dayPictureUrl} alt="weather" />
+                        <span>{currentTime}</span> &nbsp;
                         <span>{weather}</span>
                     </div>
                 </div>
