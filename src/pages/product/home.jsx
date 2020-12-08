@@ -8,7 +8,7 @@ import {
     Table
 } from 'antd';
 import LinkButton from '../../components/link-button';
-import { reqProducts } from '../../api';
+import { reqProducts, reqSearchProducts } from '../../api';
 import { PAGE_SIZE } from '../../utils/constants';
 
 const Option = Select.Option;
@@ -19,7 +19,9 @@ export default class ProductHome extends Component {
     state = {
         total: 0, // 商品总数量
         products: [], // 商品的数组
-        loading: false // 是否正在加载中
+        loading: false, // 是否正在加载中
+        searchName: '', // 搜索关键字
+        searchType: 'productName'  // 搜索类型
     };
 
     // 初始化table的列名数组
@@ -73,7 +75,13 @@ export default class ProductHome extends Component {
     // 获取指定页码的列表数据显示
     getProducts = async (pageNum, pageSize = PAGE_SIZE) => {
         this.setState({ loading: true }); // 显示loading
-        const result = await reqProducts(pageNum, pageSize);
+        const { searchName, searchType } = this.state;
+        let result;
+        if (searchName) {
+            result = await reqSearchProducts(pageNum, PAGE_SIZE, searchName, searchType);
+        } else {
+            result = await reqProducts(pageNum, pageSize);
+        }
         this.setState({ loading: false }); // 隐藏loading
         if (result.status === 0) {
             const { total, list } = result.data;
@@ -96,15 +104,15 @@ export default class ProductHome extends Component {
     render() {
 
         // 取出状态数据
-        const { products, total, loading } = this.state;
+        const { products, total, loading, searchName, searchType } = this.state;
         const title = (
             <span>
-                <Select value='1' style={{ width: '120px' }}>
-                    <Option value='1'>按名称搜索</Option>
-                    <Option value='2'>按描述搜索</Option>
+                <Select value={searchType} style={{ width: '120px' }} onChange={value => this.setState({ searchType: value })}>
+                    <Option value='productName'>按名称搜索</Option>
+                    <Option value='productDesc'>按描述搜索</Option>
                 </Select>
-                <Input placeholder='关键字' style={{ width: 200, margin: '0 15px' }} />
-                <Button type='primary'>搜索</Button>
+                <Input placeholder='关键字' style={{ width: 200, margin: '0 15px' }} value={searchName} onChange={e => this.setState({ searchName: e.target.value })} />
+                <Button type='primary' onClick={() => this.getProducts(1)}>搜索</Button>
             </span>
         );
 

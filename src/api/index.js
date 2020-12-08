@@ -27,6 +27,8 @@ export const reqAddCategory = (categoryName, parentId) => ajax('/manage/category
 export const reqUpdateCategory = (categoryId, categoryName) => ajax('/manage/category/update', { categoryId, categoryName }, 'POST');
 // 获取商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', { pageNum, pageSize });
+// 搜索商品分页列表(searchType有两个值 productName/productDesc, 通过商品名/商品描述搜索)
+export const reqSearchProducts = (pageNum, pageSize, searchName, searchType) => ajax('/manage/product/search', { pageNum, pageSize, [searchType]: searchName });
 
 // jsonp请求接口的请求函数
 export const reqWeather = city => new Promise((resolve) => {
