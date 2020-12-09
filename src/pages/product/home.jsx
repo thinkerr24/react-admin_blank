@@ -59,7 +59,7 @@ export default class ProductHome extends Component {
                 render: product => (
                     <div>
                         <div>
-                            <LinkButton>详情</LinkButton>
+                            <LinkButton onClick={() => this.props.history.push('/product/detail', product)}>详情</LinkButton>
                         </div>
                         <div>
                             <LinkButton>修改</LinkButton>

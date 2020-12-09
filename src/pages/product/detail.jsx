@@ -5,15 +5,17 @@ import {
     List
 } from 'antd';
 import './product-detail.less';
+import { BASE_IMG_URL } from '../../utils/constants';
 
 const Item = List.Item;
 
 // product的详情子路由页面
 export default class ProductDetail extends Component {
     render() {
+        const product = this.props.location.state;
         const title = (
             <span>
-                <Icon type='arrow-left'/>
+                <Icon type='arrow-left' style={{ color: 'green', marginRight: 10, fontSize: 16 }} onClick={() => this.props.history.goBack()} />
                 <span>商品详情</span>
             </span>
         );
@@ -23,30 +25,36 @@ export default class ProductDetail extends Component {
                     <Item>
                         <span className='left'>商品名称</span>
                         &nbsp;
-                        <span>联想ThinkPad 翼480</span>
+                        <span>{product.name}</span>
                     </Item>
                     <Item>
                         <span className='left'>商品描述</span>
                         &nbsp;
-                        <span>年度重量级新品, X390、T490全新登场, 更加轻薄机身设计</span>
+                        <span>{product.desc}</span>
                     </Item>
                     <Item>
                         <span className='left'>商品价格</span>
                         &nbsp;
-                        <span>6600元</span>
+                        <span>{product.price}元</span>
+                    </Item>
+                    <Item>
+                        <span className='left'>所属分类</span>
+                        &nbsp;
+                        <span>电脑-&gt;笔记本</span>
                     </Item>
                     <Item>
                         <span className='left'>商品图片</span>
                         &nbsp;
                         <span>
-                            <img className="product-img" src="http://localhost:5000/upload/image-1559402396338.jpg" alt="img"/>
-                            <img className="product-img" src="http://localhost:5000/upload/image-1559402396338.jpg" alt="img"/>
+                            {
+                                product.imgs.map(img => <img className="product-img" key={img} src={BASE_IMG_URL + img} alt="img" />)
+                            }
                         </span>
                     </Item>
                     <Item>
                         <span className='left'>商品详情</span>
                         &nbsp;
-                        <span dangerouslySetInnerHTML={{__html: "<p><span style=\"color: rgb(228,57,60);background-color: rgb(255,255,255);font-size: 12px;\">想你所需，超你所想！精致外观，轻薄便携带光驱，内置正版office杜绝盗版死机，全国联保两年！</span> 222</p>\n<p><span style=\"color: rgb(102,102,102);background-color: rgb(255,255,255);font-size: 16px;\">联想（Lenovo）扬天V110 15.6英寸家用轻薄便携商务办公手提笔记本电脑 定制【E2-9010/4G/128G固态】 2G独显 内置</span></p>\n<p><span style=\"color: rgb(102,102,102);background-color: rgb(255,255,255);font-size: 16px;\">99999</span></p>\n"}}></span>
+                        <span dangerouslySetInnerHTML={{ __html: product.detail }}></span>
                     </Item>
                 </List>
             </Card>
