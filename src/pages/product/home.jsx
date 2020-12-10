@@ -5,10 +5,11 @@ import {
     Input,
     Button,
     Icon,
-    Table
+    Table,
+    message
 } from 'antd';
 import LinkButton from '../../components/link-button';
-import { reqProducts, reqSearchProducts } from '../../api';
+import { reqProducts, reqSearchProducts, reqUpdateStatus } from '../../api';
 import { PAGE_SIZE } from '../../utils/constants';
 
 const Option = Select.Option;
@@ -43,15 +44,18 @@ export default class ProductHome extends Component {
             {
                 width: 100,
                 title: '状态',
-                dataIndex: 'status',
-                render: status => (
-                    <span>
-                        <Button type='danger'>
-                            下架
-                        </Button>
-                        <span>在售</span>
-                    </span>
-                )
+                // dataIndex: 'status',
+                render: product => {
+                    const { status, _id } = product;
+                    const newStatus = status === 1 ? 2 : 1;
+                    return (
+                        <span>
+                            <Button type='danger' onClick={() => this.updateStatus(_id, newStatus)}>
+                                {status === 1 ? '下架' : '上架'}
+                            </Button>
+                            <span>{status === 1 ? '在售' : '已下架'}</span>
+                        </span>);
+                }
             },
             {
                 width: 100,
@@ -74,6 +78,7 @@ export default class ProductHome extends Component {
 
     // 获取指定页码的列表数据显示
     getProducts = async (pageNum, pageSize = PAGE_SIZE) => {
+        this.pageNum = pageNum; // 保存pageNum
         this.setState({ loading: true }); // 显示loading
         const { searchName, searchType } = this.state;
         let result;
@@ -89,6 +94,15 @@ export default class ProductHome extends Component {
                 total,
                 products: list
             });
+        }
+    }
+
+    // 更新指定商品的状态
+    updateStatus = async (productId, status) => {
+        const result = await reqUpdateStatus(productId, status);
+        if (result.status === 0) {
+            message.success('更新商品上架状态成功!');
+            this.getProducts(this.pageNum);
         }
     }
     componentWillMount() {
