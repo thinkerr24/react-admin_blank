@@ -10,7 +10,7 @@ db.categorys.insert({parentId: "0", name: "手机", __v: 0})
 db.categorys.insert({parentId: "0", name: "箱包", __v: 0})
 db.categorys.insert({parentId: "0", name: "护肤品", __v: 0})
 db.categorys.insert({parentId: "0", name: "xxx", __v: 0})
-db.categorys.find()
+
 
 db.categorys.insert({parentId: "5fc3b412707ce56215d48c7b", name: "彩色电视", __v: 0})
 db.categorys.insert({parentId: "5fc3b412707ce56215d48c7b", name: "冰箱", __v: 0})
@@ -94,5 +94,7 @@ db.products.insertMany([
                 "__v": 0
             }
 ])
-
+# 注意表关系 products依赖categories表
+db.users.find()
+db.categorys.find()
 db.products.find()

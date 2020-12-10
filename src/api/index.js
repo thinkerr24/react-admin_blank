@@ -25,6 +25,8 @@ export const reqCategories = parentId => ajax('/manage/category/list', { parentI
 export const reqAddCategory = (categoryName, parentId) => ajax('/manage/category/add', { categoryName, parentId }, 'POST');
 // 更新分类
 export const reqUpdateCategory = (categoryId, categoryName) => ajax('/manage/category/update', { categoryId, categoryName }, 'POST');
+// 获取一个分类
+export const reqCategory = categoryId => ajax('/manage/category/info', {categoryId});
 // 获取商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', { pageNum, pageSize });
 // 搜索商品分页列表(searchType有两个值 productName/productDesc, 通过商品名/商品描述搜索)
