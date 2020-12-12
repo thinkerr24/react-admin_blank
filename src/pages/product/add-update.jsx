@@ -12,8 +12,30 @@ import {
 const { Item } = Form;
 const { TextArea } = Input;
 
+
+const options = [
+    {
+        value: 'zhejiang',
+        label: 'Zhejiang',
+        isLeaf: false,
+    },
+    {
+        value: 'jiangsu',
+        label: 'Jiangsu',
+        isLeaf: false,
+    },
+    {
+        value: 'isLeaf',
+        label: 'isLeaf',
+        isLeaf: true,
+    },
+];
+
 // product的添加和更新子路由页面
 class ProductAddUpdate extends Component {
+    state = {
+        options,
+    };
 
     // 针对商品价格的自定义验证函数
     validatePrice = (rule, value, callback) => {
@@ -23,6 +45,33 @@ class ProductAddUpdate extends Component {
             callback('价格必须大于0');
         }
     }
+
+    // 加载下一级列表的回调函数
+    loadData = selectedOptions => {
+        // 得到选择的option对象
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+        // 显示loading效果
+        targetOption.loading = true;
+
+        // 模拟发请求, 有延迟
+        // load options lazily
+        setTimeout(() => {
+            targetOption.loading = false;
+            targetOption.children = [
+                {
+                    label: `${targetOption.label} Dynamic 1`,
+                    value: 'dynamic1',
+                },
+                {
+                    label: `${targetOption.label} Dynamic 2`,
+                    value: 'dynamic2',
+                },
+            ];
+            this.setState({
+                options: [...this.state.options],
+            });
+        }, 1000);
+    };
 
     submit = () => {
         // 进行表单验证
@@ -85,10 +134,13 @@ class ProductAddUpdate extends Component {
 
                     </Item>
                     <Item label='商品分类'>
-                        <Input placeholder='请输入商品名称' />
+                        <Cascader
+                            options={this.state.options} // 一级列表项数组
+                            loadData={this.loadData} // 选择某个列表项后加载其下一级列表的监听回调
+                        />
                     </Item>
                     <Item label='商品图片'>
-                        <Input placeholder='请输入商品名称' />
+                        <Upload />
                     </Item>
                     <Item label='商品详情'>
                         <Input placeholder='请输入商品名称' />
