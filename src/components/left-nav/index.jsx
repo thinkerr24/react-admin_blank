@@ -51,7 +51,7 @@ class LeftNav extends Component {
             ));
         } else {
             // 查找一个与当前请求路径匹配的子Item
-            const cItem = item.children.find(cItem => cItem.key === this.props.location.pathname);
+            const cItem = item.children.find(cItem => this.props.location.pathname.indexOf(cItem.key) === 0);
             // 如果存在, 说明当前item的子列表需要打开
             if (cItem) {
                 this.openKey = item.key;
@@ -80,7 +80,10 @@ class LeftNav extends Component {
     }
     render() {
         // 获得当前请求的路由路径
-        const path = this.props.location.pathname;
+        let path = this.props.location.pathname;
+        if (path.indexOf('/product') === 0) { // 当前请求的是商品或其子路由
+            path = '/product';
+        }
         // 得到需要打开菜单项的key
         const openKey = this.openKey;
         return (
