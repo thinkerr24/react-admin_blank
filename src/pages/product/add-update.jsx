@@ -8,35 +8,39 @@ import {
     Button,
     Icon
 } from 'antd';
+import { reqCategories } from '../../api';
 
 const { Item } = Form;
 const { TextArea } = Input;
 
-
-const options = [
-    {
-        value: 'zhejiang',
-        label: 'Zhejiang',
-        isLeaf: false,
-    },
-    {
-        value: 'jiangsu',
-        label: 'Jiangsu',
-        isLeaf: false,
-    },
-    {
-        value: 'isLeaf',
-        label: 'isLeaf',
-        isLeaf: true,
-    },
-];
-
 // product的添加和更新子路由页面
 class ProductAddUpdate extends Component {
     state = {
-        options,
+        options: [],
     };
 
+    initOptions = categories => {
+        // 根据categories生成options数组
+        const options = categories.map(c => ({
+            value: c._id,
+            label: c.name,
+            isLeaf: false,
+
+        }));
+        // 更新options状态
+        this.setState({
+            options
+        })
+    }
+
+    // 获取一级和二级分类列表
+    getCategories = async parentId => {
+        const result = await reqCategories(parentId);
+        if (result.status === 0) {
+            const categories = result.data;
+            this.initOptions(categories);
+        }
+    }
     // 针对商品价格的自定义验证函数
     validatePrice = (rule, value, callback) => {
         if (value * 1 > 0) {
@@ -81,6 +85,11 @@ class ProductAddUpdate extends Component {
             }
         });
     }
+
+    componentDidMount() {
+        this.getCategories(0);
+    }
+
     render() {
         // 指定Item布局的配置对象
         const formItemLayout = {
