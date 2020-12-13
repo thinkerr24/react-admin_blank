@@ -38,7 +38,13 @@ class ProductAddUpdate extends Component {
         const result = await reqCategories(parentId);
         if (result.status === 0) {
             const categories = result.data;
-            this.initOptions(categories);
+            // 如果是一级
+            if (parentId === '0') {
+                this.initOptions(categories);
+            } else { // 如果是二级
+                return categories;
+            }
+
         }
     }
     // 针对商品价格的自定义验证函数
@@ -51,30 +57,32 @@ class ProductAddUpdate extends Component {
     }
 
     // 加载下一级列表的回调函数
-    loadData = selectedOptions => {
+    loadData = async selectedOptions => {
         // 得到选择的option对象
         const targetOption = selectedOptions[selectedOptions.length - 1];
         // 显示loading效果
         targetOption.loading = true;
 
-        // 模拟发请求, 有延迟
-        // load options lazily
-        setTimeout(() => {
-            targetOption.loading = false;
-            targetOption.children = [
-                {
-                    label: `${targetOption.label} Dynamic 1`,
-                    value: 'dynamic1',
-                },
-                {
-                    label: `${targetOption.label} Dynamic 2`,
-                    value: 'dynamic2',
-                },
-            ];
-            this.setState({
-                options: [...this.state.options],
-            });
-        }, 1000);
+        // 根据选中的分类, 请求获取二级分类列表
+        const subCategories = await this.getCategories(targetOption.value);
+        targetOption.loading = false;
+        
+        if (subCategories && subCategories.length > 0) {
+            // 生成一个二级列表的options
+            const childOptions = subCategories.map(c => ({
+                value: c._id,
+                label: c.name,
+                isLeaf: true
+            }));
+            // 关联到当前option上
+            targetOption.children = childOptions;
+        } else { // 当前选中分类没有二级分类
+            targetOption.isLeaf = true;
+        }
+
+        this.setState({
+            options: [...this.state.options],
+        });
     };
 
     submit = () => {
@@ -87,7 +95,7 @@ class ProductAddUpdate extends Component {
     }
 
     componentDidMount() {
-        this.getCategories(0);
+        this.getCategories('0');
     }
 
     render() {
