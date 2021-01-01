@@ -66,7 +66,7 @@ class ProductAddUpdate extends Component {
         // 根据选中的分类, 请求获取二级分类列表
         const subCategories = await this.getCategories(targetOption.value);
         targetOption.loading = false;
-        
+
         if (subCategories && subCategories.length > 0) {
             // 生成一个二级列表的options
             const childOptions = subCategories.map(c => ({
@@ -88,6 +88,7 @@ class ProductAddUpdate extends Component {
     submit = () => {
         // 进行表单验证
         this.props.form.validateFields((error, values) => {
+            console.log('submit():', values);
             if (!error) {
                 alert('发送Ajax请求!');
             }
@@ -98,7 +99,33 @@ class ProductAddUpdate extends Component {
         this.getCategories('0');
     }
 
+
+    componentWillMount() {
+        // 取出携带的state
+        const product = this.props.location.state;
+        // 保存一个是否是更新的标识
+        this.isUpdate = !!product;
+        // 保存商品(如果没有, 保存{}, 提高代码复用性)
+        this.product = product || {};
+    }
+
     render() {
+
+        const { isUpdate, product } = this;
+        // 用来接收级联分类ID的数组
+        const categoryIds = [];
+        const { pCategoryId, categroyId } = product;
+        if (isUpdate) {
+            // 商品是一个一级分类商品
+            if (pCategoryId === '0') {
+                categoryIds.push(categroyId);
+            } else {
+                // 商品是一个二级分类商品
+                categoryIds.push(pCategoryId);
+                categoryIds.push(categroyId);
+            }
+        }
+
         // 指定Item布局的配置对象
         const formItemLayout = {
             labelCol: { span: 2 },   // 指定左侧label占宽比
@@ -108,7 +135,7 @@ class ProductAddUpdate extends Component {
         const title = (
             <span>
                 <Icon type='arrow-left' style={{ color: 'green', marginRight: 10, fontSize: 16 }} onClick={() => this.props.history.goBack()} />
-                <span>添加商品</span>
+                <span>{isUpdate ? '修改商品' : '添加商品'}</span>
             </span>
         );
 
@@ -120,7 +147,7 @@ class ProductAddUpdate extends Component {
                     <Item label='商品名称'>
                         {
                             getFieldDecorator('name', {
-                                initialValue: '',
+                                initialValue: product.name,
                                 rules: [
                                     { required: true, message: '必须输入商品名称' }
                                 ]
@@ -130,7 +157,7 @@ class ProductAddUpdate extends Component {
                     <Item label='商品描述'>
                         {
                             getFieldDecorator('desc', {
-                                initialValue: '',
+                                initialValue: product.desc,
                                 rules: [
                                     { required: true, message: '必须输入商品描述' }
                                 ]
@@ -141,7 +168,7 @@ class ProductAddUpdate extends Component {
                     <Item label='商品价格'>
                         {
                             getFieldDecorator('price', {
-                                initialValue: '',
+                                initialValue: product.desc,
                                 rules: [
                                     { required: true, message: '必须输入商品价格' },
                                     { validator: this.validatePrice }
@@ -151,10 +178,17 @@ class ProductAddUpdate extends Component {
 
                     </Item>
                     <Item label='商品分类'>
-                        <Cascader
-                            options={this.state.options} // 一级列表项数组
-                            loadData={this.loadData} // 选择某个列表项后加载其下一级列表的监听回调
-                        />
+                        {
+                            getFieldDecorator('categoryIds', {
+                                initialValue: categoryIds,
+                                rules: [
+                                    { required: true, message: '必须指定商品分类' }
+                                ]
+                            })(<Cascader
+                                options={this.state.options} // 一级列表项数组
+                                loadData={this.loadData} // 选择某个列表项后加载其下一级列表的监听回调
+                            />)
+                        }
                     </Item>
                     <Item label='商品图片'>
                         <Upload />
