@@ -19,7 +19,7 @@ class ProductAddUpdate extends Component {
         options: [],
     };
 
-    initOptions = categories => {
+    initOptions = async categories => {
         // 根据categories生成options数组
         const options = categories.map(c => ({
             value: c._id,
@@ -27,6 +27,25 @@ class ProductAddUpdate extends Component {
             isLeaf: false,
 
         }));
+
+        // 如果是一个二级分类商品的更新
+        const { isUpdate, product } = this;
+        const { pCategoryId } = product;
+        if (isUpdate && pCategoryId !== '0') {
+            // 获取对应的二级分类列表
+            const subCategories = await this.getCategories(pCategoryId);
+            // 生成二级下拉列表的options
+            const childOptions = subCategories.map(c => ({
+                value: c._id,
+                label: c.name,
+                isLeaf: true
+            }));
+            // 找到当前商品对应的一级option对象
+            const targetOption = options.find(option => option.value === pCategoryId);
+            // 关联到对应的一级option上
+            targetOption.children = childOptions;
+        }
+
         // 更新options状态
         this.setState({
             options
@@ -114,15 +133,15 @@ class ProductAddUpdate extends Component {
         const { isUpdate, product } = this;
         // 用来接收级联分类ID的数组
         const categoryIds = [];
-        const { pCategoryId, categroyId } = product;
+        const { pCategoryId, categoryId } = product;
         if (isUpdate) {
             // 商品是一个一级分类商品
             if (pCategoryId === '0') {
-                categoryIds.push(categroyId);
+                categoryIds.push(categoryId);
             } else {
                 // 商品是一个二级分类商品
                 categoryIds.push(pCategoryId);
-                categoryIds.push(categroyId);
+                categoryIds.push(categoryId);
             }
         }
 
@@ -185,6 +204,7 @@ class ProductAddUpdate extends Component {
                                     { required: true, message: '必须指定商品分类' }
                                 ]
                             })(<Cascader
+                                placeholder='请指定商品分类'
                                 options={this.state.options} // 一级列表项数组
                                 loadData={this.loadData} // 选择某个列表项后加载其下一级列表的监听回调
                             />)
