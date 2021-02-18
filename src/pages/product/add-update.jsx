@@ -4,10 +4,10 @@ import {
     Form,
     Input,
     Cascader,
-    Upload,
     Button,
     Icon
 } from 'antd';
+import PicturesWall from './pictures-wall';
 import { reqCategories } from '../../api';
 
 const { Item } = Form;
@@ -187,7 +187,7 @@ class ProductAddUpdate extends Component {
                     <Item label='商品价格'>
                         {
                             getFieldDecorator('price', {
-                                initialValue: product.desc,
+                                initialValue: product.price,
                                 rules: [
                                     { required: true, message: '必须输入商品价格' },
                                     { validator: this.validatePrice }
@@ -211,7 +211,7 @@ class ProductAddUpdate extends Component {
                         }
                     </Item>
                     <Item label='商品图片'>
-                        <Upload />
+                        <PicturesWall />
                     </Item>
                     <Item label='商品详情'>
                         <Input placeholder='请输入商品名称' />
