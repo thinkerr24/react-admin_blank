@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload, Icon, Modal } from 'antd';
+import { Upload, Icon, Modal, message } from 'antd';
 // 用于图片上传的组件
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -14,19 +14,7 @@ export default class PicturesWall extends React.Component {
   state = {
     previewVisible: false,
     previewImage: '',
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-5',
-        name: 'image.png',
-        status: 'error',
-      },
-    ],
+    fileList: [],
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -45,8 +33,21 @@ export default class PicturesWall extends React.Component {
   // file: 当前操作的图片文件(上传/删除)
   // fileList: 所有已上传图片文件对象的数组
   handleChange = ({ file, fileList }) => {
-    console.log('upload handleChange:', file.status, file);
-    this.setState({fileList});
+    // console.log('upload handleChange:', file.status, file);
+    // 一旦上传成功, 将当前上传的file信息修正(name, url)
+    if (file.status === 'done') {
+      const result = file.response; // { status: 0, data: {name: 'xxx.jpg', url: '图片地址'}}
+      if (result.status === 0) {
+        message.success('上传图片成功!');
+        const { name, url } = result.data;
+        file = fileList[fileList.length - 1];
+        file.name = name;
+        file.url = url;
+      } else {
+        message.error('上传图片失败!');
+      }
+    }
+    this.setState({ fileList });
   };
 
   render() {
