@@ -19,6 +19,11 @@ class ProductAddUpdate extends Component {
         options: [],
     };
 
+    constructor(props) {
+        super(props);
+        // 创建用来保存ref标识的标签对象的容器
+        this.pw = React.createRef();
+    }
     initOptions = async categories => {
         // 根据categories生成options数组
         const options = categories.map(c => ({
@@ -109,6 +114,8 @@ class ProductAddUpdate extends Component {
         this.props.form.validateFields((error, values) => {
             console.log('submit():', values);
             if (!error) {
+                const images = this.pw.current.getImages();
+                console.log('imags:', images);
                 alert('发送Ajax请求!');
             }
         });
@@ -211,7 +218,9 @@ class ProductAddUpdate extends Component {
                         }
                     </Item>
                     <Item label='商品图片'>
-                        <PicturesWall />
+                        <PicturesWall 
+                            ref={this.pw}
+                        />
                     </Item>
                     <Item label='商品详情'>
                         <Input placeholder='请输入商品名称' />

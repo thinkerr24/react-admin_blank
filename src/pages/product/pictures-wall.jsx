@@ -17,6 +17,11 @@ export default class PicturesWall extends React.Component {
     fileList: [],
   };
 
+  // 获取所有已上传文件名的数组
+  getImages = () => {
+    return this.state.fileList.map(file => file.name);
+  }
+
   handleCancel = () => this.setState({ previewVisible: false });
 
   handlePreview = async file => {
@@ -78,3 +83,8 @@ export default class PicturesWall extends React.Component {
     );
   }
 }
+
+/**
+ * 1.子组件调用父组件的方法: 将父组件的方法以函数属性的形式传递给子组件，子组件就可以调用
+ * 2.父组件调用子组件的方法: 在父组件中通过ref得到子组件标签对象(也就是组件对象)，调用其方法
+ */
