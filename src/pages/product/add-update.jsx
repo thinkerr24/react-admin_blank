@@ -140,7 +140,7 @@ class ProductAddUpdate extends Component {
         const { isUpdate, product } = this;
         // 用来接收级联分类ID的数组
         const categoryIds = [];
-        const { pCategoryId, categoryId } = product;
+        const { pCategoryId, categoryId, imgs } = product;
         if (isUpdate) {
             // 商品是一个一级分类商品
             if (pCategoryId === '0') {
@@ -220,6 +220,7 @@ class ProductAddUpdate extends Component {
                     <Item label='商品图片'>
                         <PicturesWall 
                             ref={this.pw}
+                            imgs={imgs}
                         />
                     </Item>
                     <Item label='商品详情'>

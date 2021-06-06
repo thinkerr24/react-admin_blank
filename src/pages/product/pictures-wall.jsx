@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Upload, Icon, Modal, message } from 'antd';
 import { reqDeleteImg } from '../../api';
+import { BASE_IMG_URL } from '../../utils/constants';
 // 用于图片上传的组件
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -12,11 +14,35 @@ function getBase64(file) {
 }
 
 export default class PicturesWall extends React.Component {
-  state = {
-    previewVisible: false,
-    previewImage: '',
-    fileList: [],
-  };
+
+  static propTypes = {
+    imgs: PropTypes.array
+  }
+
+  constructor (props) {
+    super(props);
+
+    let fileList = [];
+
+    // 如果传入imgs属性
+    const { imgs } = this.props;
+    if (imgs && imgs.length > 0) {
+      fileList = imgs.map((img, index) => ({
+        uid: -index,
+        name: img,
+        status: 'done',
+        url: BASE_IMG_URL + img
+      }));
+    }
+
+    // 初始化状态
+    this.state = {
+      previewVisible: false, // 标识是否显示大图预览Modal
+      previewImage: '', // 大图的url
+      fileList  // 所有已上传图片的数组
+    };
+  
+  }
 
   // 获取所有已上传文件名的数组
   getImages = () => {
