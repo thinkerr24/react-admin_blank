@@ -1,5 +1,6 @@
 import React from 'react';
 import { Upload, Icon, Modal, message } from 'antd';
+import { reqDeleteImg } from '../../api';
 // 用于图片上传的组件
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -37,7 +38,7 @@ export default class PicturesWall extends React.Component {
 
   // file: 当前操作的图片文件(上传/删除)
   // fileList: 所有已上传图片文件对象的数组
-  handleChange = ({ file, fileList }) => {
+  handleChange = async ({ file, fileList }) => {
     // console.log('upload handleChange:', file.status, file);
     // 一旦上传成功, 将当前上传的file信息修正(name, url)
     if (file.status === 'done') {
@@ -50,6 +51,13 @@ export default class PicturesWall extends React.Component {
         file.url = url;
       } else {
         message.error('上传图片失败!');
+      }
+    } else if (file.status === 'removed') { // 删除图片
+      const result = await reqDeleteImg(file.name);
+      if (result.status === 0) {
+        message.success('删除图片成功!');
+      } else {
+        message.success('删除图片失败!');
       }
     }
     this.setState({ fileList });

@@ -33,7 +33,8 @@ export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', {
 export const reqUpdateStatus = (productId, status) => ajax('/manage/product/updateStatus', {productId, status}, 'POST');
 // 搜索商品分页列表(searchType有两个值 productName/productDesc, 通过商品名/商品描述搜索)
 export const reqSearchProducts = (pageNum, pageSize, searchName, searchType) => ajax('/manage/product/search', { pageNum, pageSize, [searchType]: searchName });
-
+// 删除图片
+export const reqDeleteImg = name => ajax('/manage/img/delete', { name }, 'POST');
 // jsonp请求接口的请求函数
 export const reqWeather = city => new Promise((resolve) => {
     const url = `http://wthrcdn.etouch.cn/weather_mini?city=${city}`;
